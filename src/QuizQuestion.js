@@ -1,15 +1,21 @@
 import React, { Component } from 'react'
-import QuizQuestionButton from './QuizQuestionButton';
+import QuizQuestionButton from './QuizQuestionButton.js'
 
 class QuizQuestion extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { incorrectAnswer: false }
+  }
 
-  render() {
-    const handleClick = (buttonText) => {
-      if (buttonText === this.props.quiz_question.answer) {
-        this.props.showNextQuestionHandler();
-      }
+  handleClick(buttonText) {
+    if(buttonText === this.props.quiz_question.answer) {
+      this.setState({ incorrectAnswer: false });
+      this.props.showNextQuestionHandler()
+    } else {
+      this.setState({ incorrectAnswer: true });
     }
-
+  }
+  render() {
     return (
       <main>
         <section>
@@ -17,16 +23,15 @@ class QuizQuestion extends Component {
         </section>
         <section className="buttons">
           <ul>
-            {this.props.quiz_question.answer_options.map(
-              (answer_option, index) => 
-                <QuizQuestionButton key={index} button_text={answer_option} clickHandler = {handleClick.bind(this)}/>
-              )
-            }
+            {this.props.quiz_question.answer_options.map((answer_option, index) => {
+              return <QuizQuestionButton key={index} button_text={answer_option} clickHandler={this.handleClick.bind(this)} />
+            })}
           </ul>
         </section>
-      </main>
+        { this.state.incorrectAnswer ? <p className='error'>Sorry, that's not right</p> : null }
+      </main>      
     )
   }
 }
 
-export default QuizQuestion;
+export default QuizQuestion
